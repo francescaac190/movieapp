@@ -22,14 +22,19 @@ class HomeScreen extends StatelessWidget {
                 ))
           ],
         ),
-        body: Column(
-          children: [
-            //cardswipper
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              //cardswipper
 
-            CardSwiper(),
+              CardSwiper(),
 
-            //lista horizontal
-          ],
+              //lista horizontal
+
+              Movieslider()
+            ],
+          ),
         ));
   }
 }
