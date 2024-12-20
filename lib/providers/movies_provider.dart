@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:movieapp/helpers/debouncer.dart';
 import 'package:movieapp/models/credits.dart';
 import 'package:movieapp/models/models.dart';
 
@@ -13,10 +15,19 @@ class MoviesProvider extends ChangeNotifier {
   List<Result> onDisplayMovies = [];
 
   List<Result> onpoular = [];
-  // List<Cast> castlist = [];
+
   Map<int, List<Cast>> castlist = {};
 
   int popularpage = 0;
+  final StreamController<List<Result>> _suggetionsStreamController =
+      StreamController.broadcast();
+
+  final debouncer = Debouncer(
+    duration: Duration(milliseconds: 500),
+  );
+
+  Stream<List<Result>> get suggestionsStream =>
+      _suggetionsStreamController.stream;
 
   MoviesProvider() {
     this.getOnDisplayMovies();
@@ -74,5 +85,18 @@ class MoviesProvider extends ChangeNotifier {
     final searchresponse = Search.fromMap(jsonDecode(response.body)).results;
 
     return searchresponse!;
+  }
+
+  void getSuggetionsByQuery(String searchTerm) {
+    debouncer.value = searchTerm;
+
+    debouncer.onValue = (value) async {
+      final results = await searchmovie(value.toString());
+      _suggetionsStreamController.add(results);
+    };
+    final timer = Timer.periodic(Duration(milliseconds: 300), (timer) {
+      debouncer.value = searchTerm;
+    });
+    Future.delayed(Duration(milliseconds: 301)).then((_) => timer.cancel());
   }
 }
