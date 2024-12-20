@@ -14,6 +14,8 @@ class Result {
   double? voteAverage;
   int? voteCount;
 
+  String? heroid;
+
   Result({
     this.adult,
     this.backdropPath,
@@ -33,6 +35,13 @@ class Result {
   get fullImageurl {
     if (this.posterPath != null)
       return 'https://image.tmdb.org/t/p/w500$posterPath';
+
+    return 'https://i.sstatic.net/GNhxO.png';
+  }
+
+  get fullbackdropPath {
+    if (this.backdropPath != null)
+      return 'https://image.tmdb.org/t/p/w500$backdropPath';
 
     return 'https://i.sstatic.net/GNhxO.png';
   }

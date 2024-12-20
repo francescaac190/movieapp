@@ -32,6 +32,7 @@ class Movieslider extends StatelessWidget {
               itemCount: movies.length,
               itemBuilder: (context, index) => _MoviePoster(
                 movie: movies[index],
+                heroid: '${title}-${index}',
               ),
             ),
           )
@@ -43,11 +44,12 @@ class Movieslider extends StatelessWidget {
 
 class _MoviePoster extends StatelessWidget {
   final Result movie;
-
-  const _MoviePoster({super.key, required this.movie});
+  final String heroid;
+  const _MoviePoster({super.key, required this.movie, required this.heroid});
 
   @override
   Widget build(BuildContext context) {
+    movie.heroid = heroid;
     return Container(
       width: 130,
       height: 190,
@@ -58,16 +60,19 @@ class _MoviePoster extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'details',
-                arguments: 'movie-instance'),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: FadeInImage(
-                placeholder: AssetImage('assets/no-image.jpg'),
-                image: NetworkImage(movie.fullImageurl),
-                height: 190,
-                width: 130,
-                fit: BoxFit.cover,
+            onTap: () =>
+                Navigator.pushNamed(context, 'details', arguments: movie),
+            child: Hero(
+              tag: movie.heroid!,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: FadeInImage(
+                  placeholder: AssetImage('assets/no-image.jpg'),
+                  image: NetworkImage(movie.fullImageurl),
+                  height: 190,
+                  width: 130,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
